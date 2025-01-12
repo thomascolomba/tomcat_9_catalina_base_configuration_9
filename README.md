@@ -1,23 +1,23 @@
 # tomcat_9_catalina_base_configuration_9
 
-Se expone un java MBean a una webapp.
+Se expone un java bean a una webapp.
 
-proyecto de MBean con su código fuente y build de Ant : ./source_code/mymbean/
+proyecto de bean con su código fuente y build de Ant : ./source_code/mybean/
 
-proyecto de la webapp que enseña el MBean con su código fuente y build de Ant : ./source_code/mymbeanreader/
+proyecto de la webapp que enseña el bean con su código fuente y build de Ant : ./source_code/mybeanreader/
 
-Compilar y desplegar el jar del MBean se hace con : ./compileanddeploy.bat
-(para el MBean :  ant clean compile jar + copiar el jar en la carpeta lib/ de CATALINA_BASE
+Compilar y desplegar el jar del bean se hace con : ./compileanddeploy.bat
+(para el bean :  ant clean compile jar + copiar el jar en la carpeta lib/ de CATALINA_BASE
 para la webapp : ant clean compile dist  + copiar el war en la carpeta webapps/ de CATALINA_BASE)
 
-1)Al acceder a la webapp reader : http://localhost:8080/mymbeanreader/ControllerServletMBeanReader
+1)Al acceder a la webapp reader : http://localhost:8080/mybeanreader/ControllerServletBeanReader
 Se ve que el atributo foo tiene el valor de configuración del CATALINA_BASE/conf/server.xml : foo = value of foo set from server.xml in CATALINA_BASEfoo2 = Default Foo2 from MyBean.javafoo3 = Default Foo3 from MyBean.java, bar = 24
 
-2)Al acceder a la webapp writer : http://localhost:8080/mymbeanreader/ControllerServletMBeanWriter
-Se ve el mensaje : El valor de foo del MBean ha sido cambiado.
+2)Al acceder a la webapp writer : http://localhost:8080/mybeanwriter/ControllerServletBeanWriter
+Se ve el mensaje : El valor de foo del bean ha sido cambiado.
 
-3)Al volver a actualizar la webapp reader : http://localhost:8080/mymbeanreader/ControllerServletMBeanReader
-Se ve que el atributo foo tiene el valor de modificado por la webapp writer : foo = Valor de foo cambiada desde ControllerServletMBeanWriterfoo2 = Default Foo2 from MyBean.javafoo3 = Default Foo3 from MyBean.java, bar = 24
+3)Al volver a actualizar la webapp reader : http://localhost:8080/mybeanreader/ControllerServletBeanReader
+Se ve que el atributo foo tiene el valor de modificado por la webapp writer : foo = Valor de foo cambiada desde ControllerServletBeanWriterfoo2 = Default Foo2 from MyBean.javafoo3 = Default Foo3 from MyBean.java, bar = 24
 
 
 ------------ CATALINA_BASE/conf/server.xml
@@ -27,31 +27,31 @@ en la etiqueta <GlobalNamingResources> :
 		factory="org.apache.naming.factory.BeanFactory"
 		bar="24" foo="value of foo set from server.xml in CATALINA_BASE"/>
 Luego :
-	<Context docBase="mymbeanreader.war">
+	<Context docBase="mybeanreader.war">
 		<ResourceLink name="bean/MyBeanFactoryDefinedInContextParaReader"
 		global="bean/MyBeanFactory"
 		type="com.mycompany.packageofmybean.MyBean"/>
 	</Context>
 
-	<Context docBase="mymbeanwriter.war">
+	<Context docBase="mybeanwriter.war">
 		<ResourceLink name="bean/MyBeanFactoryDefinedInContextParaWriter"
 		global="bean/MyBeanFactory"
 		type="com.mycompany.packageofmybean.MyBean"/>
 	</Context>
 
------------- MBean
+------------ MyBean
 public class MyBean {
 
   private String foo = "Default Foo from MyBean.java";
   private String foo2 = "Default Foo2 from MyBean.java";
   private String foo3 = "Default Foo3 from MyBean.java";
 
------------- webapp reader, ControllerServletMBeanReader.java
+------------ webapp reader, ControllerServletBeanReader.java
 public void init() throws ServletException {
 	try {
 		Context initCtx = new InitialContext();
 		Context envCtx = (Context) initCtx.lookup("java:comp/env");
-		mBeanCompartidoDesdeGlobal = (MyBean) envCtx.lookup("bean/MyBeanFactoryDefinedInContextParaReader");
+		beanCompartidoDesdeGlobal = (MyBean) envCtx.lookup("bean/MyBeanFactoryDefinedInContextParaReader");
 	} catch(Exception e){
 		message2 = e.getMessage();
 	}
@@ -67,7 +67,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
 	out.println("<h2>" + message2 + "</h2>");
 }
 private void actualizarMessage2(){
-	message2 = "foo = " + mBeanCompartidoDesdeGlobal.getFoo() + "foo2 = " + mBeanCompartidoDesdeGlobal.getFoo2() + "foo3 = " + mBeanCompartidoDesdeGlobal.getFoo3() + ", bar = " +mBeanCompartidoDesdeGlobal.getBar();
+	message2 = "foo = " + beanCompartidoDesdeGlobal.getFoo() + "foo2 = " + beanCompartidoDesdeGlobal.getFoo2() + "foo3 = " + beanCompartidoDesdeGlobal.getFoo3() + ", bar = " +beanCompartidoDesdeGlobal.getBar();
 }
 ------------ webapp reader, web.xml
 <resource-ref>
@@ -78,21 +78,21 @@ private void actualizarMessage2(){
 </resource-ref>
 
 
------------- webapp writer, ControllerServletMBeanWriter.java
-private String message = "El valor de foo del MBean ha sido cambiado.";
-private MyBean mBeanGlobalDeTomcat;
+------------ webapp writer, ControllerServletBeanWriter.java
+private String message = "El valor de foo del Bean ha sido cambiado.";
+private MyBean beanGlobalDeTomcat;
 public void init() throws ServletException {
 	// Do required initialization
 	try {
 		Context initCtx = new InitialContext();
 		Context envCtx = (Context) initCtx.lookup("java:comp/env");
-		mBeanGlobalDeTomcat = (MyBean) envCtx.lookup("bean/MyBeanFactoryDefinedInContextParaWriter");
+		beanGlobalDeTomcat = (MyBean) envCtx.lookup("bean/MyBeanFactoryDefinedInContextParaWriter");
 	} catch(Exception e){
 		message = e.getMessage();
 	}
 }
 public void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
-	mBeanGlobalDeTomcat.setFoo("Valor de foo cambiada desde ControllerServletMBeanWriter");
+	beanGlobalDeTomcat.setFoo("Valor de foo cambiada desde ControllerServletBeanWriter");
 	response.setContentType("text/html");
 	PrintWriter out = response.getWriter();
 	out.println("<h1>" + message + "</h1>");

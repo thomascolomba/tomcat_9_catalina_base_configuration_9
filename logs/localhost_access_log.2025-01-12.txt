@@ -16,3 +16,7 @@
 127.0.0.1 - - [12/Jan/2025:15:03:29 +0100] "GET /mymbeanwriter/ControllerServletMBeanwriter HTTP/1.1" 404 733
 127.0.0.1 - - [12/Jan/2025:15:03:34 +0100] "GET /mymbeanwriter/ControllerServletMBeanWriter HTTP/1.1" 200 54
 127.0.0.1 - - [12/Jan/2025:15:03:37 +0100] "GET /mymbeanreader/ControllerServletMBeanReader HTTP/1.1" 200 177
+127.0.0.1 - - [12/Jan/2025:16:04:08 +0100] "GET /mybeanreader/ControllerServletBeanReader HTTP/1.1" 200 170
+127.0.0.1 - - [12/Jan/2025:16:04:19 +0100] "GET /mybeanreader/ControllerServletBeanWriter HTTP/1.1" 404 731
+127.0.0.1 - - [12/Jan/2025:16:04:41 +0100] "GET /mybeanwriter/ControllerServletBeanWriter HTTP/1.1" 200 53
+127.0.0.1 - - [12/Jan/2025:16:04:53 +0100] "GET /mybeanreader/ControllerServletBeanReader HTTP/1.1" 200 176

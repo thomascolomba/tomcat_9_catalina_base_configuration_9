@@ -181,14 +181,13 @@
                prefix="localhost_access_log" suffix=".txt"
                pattern="%h %l %u %t &quot;%r&quot; %s %b" />
 		
-		<!-- C:\\apache\\tomcat\\catalina_bases\\tomcat_9_catalina_base_configuration_7\\source_code\\mymbeanreader\\dist\\myapp-0.1-dev.war -->
-		<Context docBase="mymbeanreader.war">
+		<Context docBase="mybeanreader.war">
 			<ResourceLink name="bean/MyBeanFactoryDefinedInContextParaReader"
             global="bean/MyBeanFactory"
             type="com.mycompany.packageofmybean.MyBean"/>
 		</Context>
 		
-		<Context docBase="mymbeanwriter.war">
+		<Context docBase="mybeanwriter.war">
 			<ResourceLink name="bean/MyBeanFactoryDefinedInContextParaWriter"
             global="bean/MyBeanFactory"
             type="com.mycompany.packageofmybean.MyBean"/>
